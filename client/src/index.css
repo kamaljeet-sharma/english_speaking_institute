@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Source Sans 3", system-ui, sans-serif;
+  /* Black + #FE424D + white palette (token names kept so every page picks it up) */
+  --color-ink: #ffffff;          /* main text: white */
+  --color-ink-soft: #d4d4d8;     /* secondary text: soft white */
+  --color-paper: #000000;        /* page background: black */
+  --color-surface: #111113;      /* cards, inputs, header: raised black */
+  --color-line: #2c2c31;         /* borders / dividers */
+  --color-teal: #FE424D;         /* primary brand red */
+  --color-teal-dark: #d92e39;    /* hover red */
+  --color-teal-tint: #2b1013;    /* red-tinted dark background */
+  --color-saffron: #ffffff;      /* accent button: white */
+  --color-saffron-tint: #1d1d20;
+  --color-coral: #ff7b84;        /* error / danger text */
+  --color-coral-tint: #2b1013;
+}
+
+html { scroll-padding-top: 5rem; color-scheme: dark; }
+body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); }
+h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.015em; }
+
+:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* the one deliberate motion: the hero conversation types in */
+@keyframes bubble-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.bubble { opacity: 0; animation: bubble-in .5s ease forwards; }
