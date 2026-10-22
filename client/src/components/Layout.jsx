@@ -22,7 +22,9 @@ export default function Layout() {
             <img src="/logo.png" alt="WellTalk Institute of English Language" className="h-11 w-auto" />
           </Link>
           <nav className="flex flex-wrap items-center gap-1 sm:gap-3">
+            <NavLink to="/about" className={link}>About</NavLink> 
             <NavLink to="/courses" className={link}>Courses</NavLink>
+            <NavLink to="/reviews" className={link}>Reviews</NavLink>
             <NavLink to="/contact" className={link}>Free demo</NavLink>
             {user ? (
               <>

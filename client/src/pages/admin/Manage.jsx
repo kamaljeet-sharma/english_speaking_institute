@@ -160,17 +160,23 @@ export const Announcements = () => (
 
 export const Teachers = () => (
   <ResourceManager
-    title="Teachers" singular="Teacher" endpoint="/admin/teachers" canEdit={false} canDelete={false}
+    title="Teachers" singular="Teacher" endpoint="/admin/teachers"
+    defaults={{ showOnWebsite: true }}
     fields={[
       { name: 'name', label: 'Name', type: 'text', required: true },
+      { name: 'designation', label: 'Designation (shown on website)', type: 'text', hint: 'e.g. Spoken English Trainer' },
+      { name: 'avatar', label: 'Photo link', type: 'text', wide: true, hint: 'Use a full https:// image link, or a file in client/public/teachers like /teachers/priya.jpg' },
       { name: 'email', label: 'Email', type: 'text', required: true },
       { name: 'phone', label: 'Phone', type: 'text' },
-      { name: 'password', label: 'Temporary password', type: 'text', required: true },
+      { name: 'password', label: 'Temporary password', type: 'text', hint: 'Only needed when adding a new teacher.' },
+      { name: 'showOnWebsite', label: 'Show on website', type: 'checkbox' },
     ]}
     columns={[
+      { label: 'Photo', render: (t) => t.avatar ? <img src={t.avatar} alt="" className="h-10 w-10 rounded-full object-cover" /> : <span className="text-ink-soft">None</span> },
       { label: 'Name', render: (t) => <span className="font-semibold">{t.name}</span> },
+      { label: 'Designation', render: (t) => t.designation || '-' },
       { label: 'Email', render: (t) => t.email },
-      { label: 'Role', render: (t) => t.role || 'teacher' },
+      { label: 'Website', render: (t) => <Badge tone={t.showOnWebsite !== false ? 'active' : 'inactive'}>{t.showOnWebsite !== false ? 'Shown' : 'Hidden'}</Badge> },
     ]}
   />
 );
@@ -293,3 +299,36 @@ export function DemoRequests() {
     </div>
   );
 }
+
+export const Reviews = () => (
+  <ResourceManager
+    title="Reviews" singular="Review" endpoint="/reviews"
+    defaults={{ rating: 5, isApproved: true }}
+    fields={[
+      { name: 'name', label: 'Student name', type: 'text', required: true },
+      { name: 'title', label: 'Course / label', type: 'text', hint: 'e.g. Student, Spoken English Foundation' },
+      { name: 'rating', label: 'Rating (1 to 5)', type: 'number', required: true },
+      { name: 'comment', label: 'Review', type: 'textarea', required: true },
+      { name: 'isApproved', label: 'Show on website', type: 'checkbox' },
+    ]}
+    columns={[
+      { label: 'Student', render: (r) => <span className="font-semibold">{r.name}</span> },
+      { label: 'Rating', render: (r) => '★'.repeat(r.rating) },
+      { label: 'Review', render: (r) => <span className="line-clamp-2 max-w-xs">{r.comment}</span> },
+      { label: 'Status', render: (r) => <Badge tone={r.isApproved ? 'active' : 'inactive'}>{r.isApproved ? 'Approved' : 'Pending'}</Badge> },
+      { label: 'Date', render: (r) => fmtDate(r.createdAt) },
+    ]}
+    rowActions={(r, load, setNotice, setError) => (
+      <button
+        className="font-semibold text-ink hover:underline"
+        onClick={() =>
+          api.put(`/reviews/${r._id}`, { isApproved: !r.isApproved })
+            .then(() => { setNotice(r.isApproved ? 'Review hidden.' : 'Review approved and now visible.'); load(); })
+            .catch((e) => setError(errorMessage(e)))
+        }
+      >
+        {r.isApproved ? 'Hide' : 'Approve'}
+      </button>
+    )}
+  />
+);

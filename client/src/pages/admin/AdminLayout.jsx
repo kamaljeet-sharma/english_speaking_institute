@@ -10,6 +10,7 @@ const items = [
   ['/admin/payments', 'Payments'],
   ['/admin/announcements', 'Announcements'],
   ['/admin/demo-requests', 'Demo requests'],
+  ['/admin/reviews', 'Reviews'], 
   ['/admin/teachers', 'Teachers'],
 ];
 

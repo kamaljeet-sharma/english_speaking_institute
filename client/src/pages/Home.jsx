@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import api from '../api';
 import { Badge, Button } from '../components/ui';
 import { rupees } from '../utils';
+import { ReviewsSection } from '../components/Reviews';
+import TeachersSection from '../components/Teachers';
 
 function Hero() {
   return (
@@ -46,7 +48,7 @@ function Hero() {
 
 export default function Home() {
   const [courses, setCourses] = useState([]);
-  useEffect(() => { api.get('/courses').then((r) => setCourses(r.data.slice(0, 3))).catch(() => {}); }, []);
+  useEffect(() => { api.get('/courses').then((r) => setCourses(r.data.slice(0, 3))).catch(() => { }); }, []);
 
   return (
     <>
@@ -88,6 +90,10 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      <TeachersSection intro="Friendly, experienced teachers who know your name and help you speak with confidence." />
+
+      <ReviewsSection limit={3} hideIfEmpty showAllLink />
 
       <section className="mx-auto max-w-6xl px-4 py-14">
         <div className="rounded-xl bg-teal p-8 text-white sm:p-12">

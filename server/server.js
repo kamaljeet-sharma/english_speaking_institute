@@ -18,13 +18,15 @@ import paymentRoutes, { webhookHandler } from './routes/payments.js';
 import adminRoutes from './routes/admin.js';
 import demoRoutes from './routes/demo.js';
 
+import reviewRoutes from './routes/reviews.js';
+import teacherRoutes from './routes/teachers.js';
+
 const app = express();
 
 app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(morgan('dev'));
 
-// Razorpay webhook needs the raw body for signature check, so it goes BEFORE express.json()
 app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
 app.use(express.json({ limit: '1mb' }));
@@ -32,6 +34,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/api/auth/login', rateLimit({ windowMs: 15 * 60 * 1000, limit: 30 }));
 app.use('/api/auth/register', rateLimit({ windowMs: 60 * 60 * 1000, limit: 20 }));
 app.use('/api/demo', rateLimit({ windowMs: 60 * 60 * 1000, limit: 20, skip: (r) => r.method !== 'POST' }));
+app.use('/api/reviews/mine', rateLimit({ windowMs: 60 * 60 * 1000, limit: 20, skip: (r) => r.method !== 'PUT' }));
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/auth', authRoutes);
@@ -44,6 +47,10 @@ app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/demo', demoRoutes);
+
+
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/teachers', teacherRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

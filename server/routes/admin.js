@@ -75,15 +75,39 @@ router.patch('/students/:id/toggle', async (req, res) => {
   res.json({ isActive: user.isActive });
 });
 
-// Teachers (used by the Batch form)
+
 router.get('/teachers', async (_req, res) => {
-  res.json(await User.find({ role: { $in: ['teacher', 'admin'] } }).select('name email role'));
+  res.json(await User.find({ role: { $in: ['teacher', 'admin'] } }).select('name email phone role avatar designation showOnWebsite'));
 });
 
 router.post('/teachers', async (req, res) => {
-  const { name, email, phone, password } = req.body;
-  const teacher = await User.create({ name, email, phone, password, role: 'teacher' });
+  const { name, email, phone, password, avatar, designation, showOnWebsite } = req.body;
+  if (!password) return res.status(400).json({ message: 'Please set a temporary password for the new teacher.' });
+  const teacher = await User.create({ name, email, phone, password, avatar, designation, showOnWebsite, role: 'teacher' });
   res.status(201).json({ _id: teacher._id, name: teacher.name, email: teacher.email });
 });
 
+router.put('/teachers/:id', async (req, res) => {
+  const update = {};
+  for (const f of ['name', 'phone', 'avatar', 'designation', 'showOnWebsite']) {
+    if (req.body[f] !== undefined) update[f] = req.body[f];
+  }
+  const teacher = await User.findOneAndUpdate({ _id: req.params.id, role: 'teacher' }, update, { new: true, runValidators: true })
+    .select('name email phone role avatar designation showOnWebsite');
+  if (!teacher) return res.status(404).json({ message: 'Teacher not found.' });
+  res.json(teacher);
+});
+
+router.delete('/teachers/:id', async (req, res) => {
+  const teacher = await User.findOne({ _id: req.params.id, role: 'teacher' });
+  if (!teacher) return res.status(404).json({ message: 'Teacher not found.' });
+  const used = await Batch.countDocuments({ teacher: teacher._id });
+  if (used > 0) {
+    return res.status(409).json({
+      message: `${teacher.name} is assigned to ${used} batch${used === 1 ? '' : 'es'}. Change the teacher in Admin > Batches first, then delete.`,
+    });
+  }
+  await teacher.deleteOne();
+  res.json({ message: 'Teacher deleted.' });
+});
 export default router;

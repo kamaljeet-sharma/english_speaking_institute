@@ -4,6 +4,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import Home from './pages/Home';
 import Courses from './pages/Courses';
+import About from './pages/About';
+import Reviews from './pages/Reviews';
 import CourseDetail from './pages/CourseDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -29,6 +31,8 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="about" element={<About />} />
+        <Route path="reviews" element={<Reviews />} />
 
         <Route element={<ProtectedRoute role="student" />}>
           <Route path="student" element={<StudentLayout />}>
@@ -50,6 +54,7 @@ export default function App() {
             <Route path="payments" element={<M.Payments />} />
             <Route path="announcements" element={<M.Announcements />} />
             <Route path="demo-requests" element={<M.DemoRequests />} />
+            <Route path="reviews" element={<M.Reviews />} />
             <Route path="teachers" element={<M.Teachers />} />
           </Route>
         </Route>

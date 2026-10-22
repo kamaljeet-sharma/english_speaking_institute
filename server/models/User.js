@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true, minlength: 6, select: false },
     role: { type: String, enum: ['student', 'admin', 'teacher'], default: 'student' },
     avatar: String,
+    designation: { type: String, trim: true },
+    showOnWebsite: { type: Boolean, default: true },
     city: String,
     englishLevel: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced', ''], default: '' },
     isActive: { type: Boolean, default: true },
